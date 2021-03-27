@@ -31,7 +31,7 @@ void calcPass(const char *Pwd){
         sleep(1);
         printf("Nivel de entropia en bits: %.3f\n", e);
         sleep(1);
-        printf("Nivel de entropia log10: %.3f\n", e);
+        printf("Nivel de entropia log10: %.3f\n", e * 0.301029996);
         sleep(1);
         //NIVELES DE KEEPASSXC  
         if(e<0){
@@ -91,7 +91,8 @@ void calcPass(const char *Pwd){
         ZxcvbnFreeInfo(Info);
         t2.tv_sec -= t1.tv_sec;
         t2.tv_usec -= t1.tv_usec;
-        t2.tv_usec += t2.tv_sec * 1000000;
+        t2.tv_usec += t2.tv_sec * 1000000; 
+        
         printf("    Calculation Time %.2fms\n", t2.tv_usec/1000.0);
         if (ChkLen != Len)
             printf("*** Password length (%d) != sum of length of parts (%d) ***\n", Len, ChkLen);
