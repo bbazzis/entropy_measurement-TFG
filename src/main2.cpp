@@ -2,6 +2,7 @@ using namespace std;
 #include <cstring>
 #include <iostream>
 #include <unistd.h>
+#include <sys/time.h>
 #include "zxcvbn2/zxcvbn.h"
 const char *UsrDict[] =
 {
@@ -16,15 +17,16 @@ void calcPass(const char *Pwd){
         ZxcMatch_t *Info, *p;
         double m = 0.0;
 
-        //gettimeofday(&t1, 0);
+        gettimeofday(&t1, 0);
         e = ZxcvbnMatch(Pwd, UsrDict, &Info);
-        //gettimeofday(&t2, 0);
+        gettimeofday(&t2, 0);
         for(p = Info; p; p = p->Next)
             m += p->Entrpy;
 
         Len = strlen(Pwd);
         m = e - m;
-        //printf("Pass %s \tLength %d\tEntropy bits=%.3f log10=%.3f\tMulti-word extra bits=%.1f\n", Pwd, Len, e, e * 0.301029996, m);
+
+        //IMPRIMIR INFORMACION SOBRE LA CONTRASEÑA INTRODUCIDA
         printf("Contraseña introducida: %s\n", Pwd);
         sleep(1);
         printf("Tamaño de la contraseña: %d\n", Len);
@@ -33,7 +35,7 @@ void calcPass(const char *Pwd){
         sleep(1);
         printf("Nivel de entropia log10: %.3f\n", e * 0.301029996);
         sleep(1);
-        //NIVELES DE KEEPASSXC  
+        //INFORMACION SOBRE NIVELES 
         if(e<0){
 			printf("El nivel de la contraseña es muy insegura\n");
 		}
@@ -52,6 +54,7 @@ void calcPass(const char *Pwd){
         sleep(1);
         p = Info;
         ChkLen = 0;
+        //INFORMACION SOBRE TIPO DE VULNERABILIDAD FRENTE A X ATAQUE
         while(p)
         {
             int n;
@@ -79,10 +82,6 @@ void calcPass(const char *Pwd){
                 default:                printf("  Type: Unknown%d ", p->Type);   break;
             }
             ChkLen += p->Length;
-            //printf("  Length %d  Entropy %6.3f (%.2f) ", p->Length, p->Entrpy, p->Entrpy * 0.301029996);
-            // printf("Tamaño de la contraseña: %d\n", p->Length);
-            // printf("Entropia en bits: %6.3f\n", p->Entrpy);
-            // printf("Entropia log10: %.2f\n", p->Entrpy * 0.301029996);
             for(n = 0; n < p->Length; ++n, ++Pwd)
                 printf("%c", *Pwd);
             printf("\n");
@@ -92,7 +91,7 @@ void calcPass(const char *Pwd){
         t2.tv_sec -= t1.tv_sec;
         t2.tv_usec -= t1.tv_usec;
         t2.tv_usec += t2.tv_sec * 1000000; 
-        
+        //TIEMPO MINIMO NECESARIO
         printf("    Calculation Time %.2fms\n", t2.tv_usec/1000.0);
         if (ChkLen != Len)
             printf("*** Password length (%d) != sum of length of parts (%d) ***\n", Len, ChkLen);
@@ -106,7 +105,6 @@ int main(){
 		cout << "Introduce la contraseña: ";
 		cin >> input;
         cout << "\n";
-		//cout <<" Salgo";
         calcPass(input);
         sleep(1);
         while(1){
