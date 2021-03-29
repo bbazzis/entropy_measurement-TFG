@@ -3,7 +3,7 @@ using namespace std;
 #include <iostream>
 #include <unistd.h>
 #include <sys/time.h>
-#include "zxcvbn2/zxcvbn.h"
+#include "zxcvbn/zxcvbn.h"
 const char *UsrDict[] =
 {
     "Onename.Twoname@example.com", "Onename", "Twoname", "example.com", "example",

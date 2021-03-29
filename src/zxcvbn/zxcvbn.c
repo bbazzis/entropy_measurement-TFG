@@ -45,10 +45,8 @@
 #endif
 
 /* For pre-compiled headers under windows */
-#ifndef __MINGW32__
 #ifdef _WIN32
 #include "stdafx.h"
-#endif
 #endif
 
 /* Minimum number of characters in a incrementing/decrementing sequence match */
@@ -493,7 +491,7 @@ typedef struct
     uint8_t UnLeet[sizeof L33TChr];
     uint8_t LeetCnv[sizeof L33TCnv / LEET_NORM_MAP_SIZE + 1];
     uint8_t First;
-    uint8_t PossChars[CHARSET_SIZE];
+    uint8_t PossChars[49];
 } DictWork_t;
 
 /**********************************************************************************
@@ -504,7 +502,7 @@ static int ListPossibleChars(uint8_t *List, const uint8_t *Map)
 {
     unsigned int i, j, k;
     int Len = 0;
-    for(k = i = 0; i < SizeChildMapEntry; ++i, ++Map)
+    for(k = i = 0; i < 8; ++i, ++Map)
     {
         if (!*Map)
         {
@@ -650,7 +648,7 @@ static void DoDictMatch(const uint8_t *Passwd, int Start, int MaxLen, DictWork_t
             /* Get char and set of possible chars at current point in word. */
             const uint8_t *Bmap;
             c = *Passwd;
-            Bmap = ChildMap + (NodeData & ((1<<BITS_CHILD_PATT_INDEX)-1)) * SizeChildMapEntry;
+            Bmap = ChildMap + (NodeData & ((1<<14)-1)) * 8;
             NumPossChrs = ListPossibleChars(PossChars, Bmap);
 
             /* Make it lowercase and update lowercase, uppercase counts */
@@ -722,13 +720,13 @@ static void DoDictMatch(const uint8_t *Passwd, int Start, int MaxLen, DictWork_t
         }
         /* Add all the end counts of the child nodes before the one that matches */
         x = (q - Wrk->PossChars);
-        y = (NodeData >> BITS_CHILD_PATT_INDEX) & ((1 << BITS_CHILD_MAP_INDEX) - 1);
+        y = (NodeData >> 14) & ((1 << 18) - 1);
         NodeLoc = ChildLocs[x+y];
         for(w=0; w<x; ++w)
         {
             unsigned int Cloc = ChildLocs[w+y];
             z = EndCountSml[Cloc];
-            if (Cloc < NumLargeCounts)
+            if (Cloc < 310)
                 z += EndCountLge[Cloc]*256;
             Ord += z;
         }
@@ -905,7 +903,7 @@ static void DictionaryMatch(ZxcMatch_t **Result, const uint8_t *Passwd, int Star
     memset(&Extra, 0, sizeof Extra);
     memset(&Wrk, 0, sizeof Wrk);
     Wrk.Ordinal = 1;
-    Wrk.StartLoc = ROOT_NODE_LOC;
+    Wrk.StartLoc = 0;
     Wrk.Begin = Start;
     DoDictMatch(Passwd+Start, 0, MaxLen, &Wrk, Result, &Extra, 0);
 }
@@ -936,8 +934,9 @@ typedef struct
     int Shifts;
 } SpatialMatchInfo_t;
 
-/* Shift mapping, characters in pairs: first is shifted, second un-shifted. */
-static const uint8_t UK_Shift[] = "!1\"2$4%5&7(9)0*8:;<,>.?/@'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz^6_-{[|\\}]~#�4�3�`";
+/* Shift mapping, characters in pairs: first is shifted, second un-shifted. Ordered for increasing shifted character code.*/
+/* Note: on a UK keyboard  \243 is the � (Pound stirling),  \244 is the � (Euro),  \254 is the � (Not sign)  */
+static const uint8_t UK_Shift[] = "!1\"2$4%5&7(9)0*8:;<,>.?/@'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz^6_-{[|\\}]~#\2433\2444\254`";
 static const uint8_t US_Shift[] = "!1\"'#3$4%5&7(9)0*8:;<,>.?/@2AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz^6_-{[|\\}]~`";
 
 
