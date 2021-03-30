@@ -28,13 +28,13 @@ void calcPass(const char *Pwd){
 
         //IMPRIMIR INFORMACION SOBRE LA CONTRASEÑA INTRODUCIDA
         printf("Contraseña introducida: %s\n", Pwd);
-        sleep(1);
+        //sleep(1);
         printf("Tamaño de la contraseña: %d\n", Len);
-        sleep(1);
+        //sleep(1);
         printf("Nivel de entropia en bits: %.3f\n", e);
-        sleep(1);
+        //sleep(1);
         printf("Nivel de entropia log10: %.3f\n", e * 0.301029996);
-        sleep(1);
+        //sleep(1);
         //INFORMACION SOBRE NIVELES 
         if(e<0){
 			printf("El nivel de la contraseña es muy insegura\n");
@@ -43,15 +43,15 @@ void calcPass(const char *Pwd){
 			printf("El nivel de la contraseña es muy segura\n");
 		}
 		else if(e>65){
-			printf("El nivel de la contraseña es segura");
+			printf("El nivel de la contraseña es segura\n");
 		}
 		else if(e>40){
-			printf("El nivel de la contraseña es de seguridad media");
+			printf("El nivel de la contraseña es de seguridad media\n");
 		}
 		else{
-			printf("El nivel de la contraseña es insegura");
+			printf("El nivel de la contraseña es insegura\n");
 		}
-        sleep(1);
+        //sleep(1);
         p = Info;
         ChkLen = 0;
         //INFORMACION SOBRE TIPO DE VULNERABILIDAD FRENTE A X ATAQUE
@@ -84,7 +84,7 @@ void calcPass(const char *Pwd){
             ChkLen += p->Length;
             for(n = 0; n < p->Length; ++n, ++Pwd)
                 printf("%c", *Pwd);
-            printf("\n");
+            //printf("\n");
             p = p->Next;
         }
         ZxcvbnFreeInfo(Info);
@@ -92,7 +92,8 @@ void calcPass(const char *Pwd){
         t2.tv_usec -= t1.tv_usec;
         t2.tv_usec += t2.tv_sec * 1000000; 
         //TIEMPO MINIMO NECESARIO
-        printf("    Calculation Time %.2fms\n", t2.tv_usec/1000.0);
+        printf("\n");
+        printf("  Calculation Time %.2fms\n", t2.tv_usec/1000.0);
         if (ChkLen != Len)
             printf("*** Password length (%d) != sum of length of parts (%d) ***\n", Len, ChkLen);
     
@@ -106,7 +107,7 @@ int main(){
 		cin >> input;
         cout << "\n";
         calcPass(input);
-        sleep(1);
+        //sleep(1);
         while(1){
             cout << "¿Quieres seguir probando con nuevas contraseñas(Y/N)?: ";
 		    cin >> input;
