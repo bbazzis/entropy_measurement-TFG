@@ -1,1 +1,2 @@
-# tests-TFG
+# medicion_entropia-TFG
+
