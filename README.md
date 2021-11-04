@@ -1,2 +1,2 @@
-# medicion_entropia-TFG
+# entropy_measurement-TFG
 
